@@ -1,0 +1,16 @@
+{
+  "name": "FlowEventMonitorLambda",
+  "version": "1.0.0",
+  "description": "",
+  "main": "package/index.js",
+  "scripts": {},
+  "dependencies": {
+    "@onflow/fcl": "0.0.76",
+    "@onflow/sdk": "0.0.54",
+    "dotenv": "^10.0.0"
+  },
+  "devDependencies": {
+    "nodemon": "1.18.4"
+  },
+  "keywords": []
+}
