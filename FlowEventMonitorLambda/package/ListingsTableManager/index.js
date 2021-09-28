@@ -19,17 +19,25 @@ module.exports.batchWriteListings = async (items) => {
     
     const params = {
         RequestItems: {
-            TableName: writeItems
+            'ListingsTable': writeItems
         }
     }
 
     console.log(`batchWriting: ${JSON.stringify(params)}`)
-    ddb.batchWrite(params, function(err, data) {
-        if (err) {
-            console.log(`Error in batchWriteListings: ${err}`)
-        }
-        if (data) {
-            console.log('Added ' + writeItems.length + ' items to Listings Table')
-        }
-    })
+
+    try {
+        console.log(`Trying to batch write to dDB`)
+        await ddb.batchWrite(params)
+        console.log(`Finished batch write to dDB`)
+    } catch(error) {
+        console.log(`Error batch writing to dDB: ${error}`)
+    }
+    // ddb.batchWrite(params, function(err, data) {
+    //     if (err) {
+    //         console.log(`Error in batchWriteListings: ${err}`)
+    //     }
+    //     if (data) {
+    //         console.log('Added ' + writeItems.length + ' items to Listings Table')
+    //     }
+    // })
 }
