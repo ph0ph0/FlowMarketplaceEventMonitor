@@ -1,6 +1,5 @@
 const fcl = require("@onflow/fcl");
 const sdk = require("@onflow/sdk")
-require('dotenv').config()
 const { config } = fcl;
 const { batchWriteListings, batchDeleteListings } = require("./ListingsTableService")
 const { batch, neutraliseObjectArrays } = require("./utils")
