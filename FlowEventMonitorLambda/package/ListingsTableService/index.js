@@ -36,22 +36,22 @@ module.exports.batchWriteListings = async (items) => {
 }
 
 module.exports.batchDeleteListings = async (items) => {
-    var deleteItemsIDs = [];
+    var deleteItemIDs = [];
 
     for (var i = 0; i < items.length; i++) {
         const itemID = items[i];
 
         const writeItem = {
             DeleteRequest: {
-                Item: item
+                Item: itemID
             }
         }
-        deleteItemsIDs.push(writeItem);
+        deleteItemIDs.push(writeItem);
     }
     
     const params = {
         RequestItems: {
-            'ListingsTable': writeItems
+            'ListingsTable': deleteItemIDs
         }
     }
 

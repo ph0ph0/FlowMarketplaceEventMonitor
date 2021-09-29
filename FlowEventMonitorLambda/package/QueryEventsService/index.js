@@ -167,7 +167,7 @@ module.exports.ListingsCompletedData = [{
 	"transactionIndex": 0,
 	"eventIndex": 0,
 	"data": {
-		"uuid": "3",
+		"uuid": "5",
 		"address": "0xt68o7yguihljnk",
     "dna": "6987tyughj8t7oyiuhl",
     "name": "asdliasbdfk"
