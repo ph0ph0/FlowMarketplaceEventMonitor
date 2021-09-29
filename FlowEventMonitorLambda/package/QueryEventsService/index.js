@@ -85,7 +85,7 @@ module.exports.getListingCompletedEvents = async () => {
 module.exports.ListingsAvailableData = [
   {
     data: {
-      uuid: "1",
+      uuid: "3",
       address: "0xt987oghui",
       dna: "6987tyughj8t7oyiuhl",
       name: "guyog",
@@ -120,7 +120,7 @@ module.exports.ListingsAvailableData = [
 module.exports.ListingsCompletedData = [
   {
     data: {
-      uuid: "1",
+      uuid: "4",
       address: "0xt987oghui",
       dna: "6987tyughj8t7oyiuhl",
       name: "guyog",
@@ -128,7 +128,7 @@ module.exports.ListingsCompletedData = [
   },
   {
     data: {
-      uuid: "2",
+      uuid: "5",
       address: "0xt987oghui",
       dna: "6987tyughj8t7oyiuhl",
       name: "guyog",
@@ -136,7 +136,7 @@ module.exports.ListingsCompletedData = [
   },
   {
     data: {
-      uuid: "1",
+      uuid: "5",
       address: "0xt987oghui",
       dna: "6987tyughj8t7oyiuhl",
       name: "guyog",
@@ -144,7 +144,7 @@ module.exports.ListingsCompletedData = [
   },
   {
     data: {
-      uuid: "2",
+      uuid: "5",
       address: "0xt987oghui",
       dna: "6987tyughj8t7oyiuhl",
       name: "guyog",

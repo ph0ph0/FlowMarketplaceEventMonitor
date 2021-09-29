@@ -16,7 +16,6 @@ const FlowEventMonitor = async (event) => {
   await config().put("accessNode.api", process.env.ACCESS_NODE);
 
   try {
-    console.log(`1`);
     // Get the events from Flow
     const listingsCreatedEvents = ListingsAvailableData;
     const listingsDeletedEvents = ListingsCompletedData;
@@ -28,7 +27,8 @@ const FlowEventMonitor = async (event) => {
     );
     // console.log(`cE: ${createdEvents}, dE: ${deletedEvents}`);
     if (createdEvents.length == 0 && deletedEvents.length == 0) {
-      console.log("No events to write/delete, all were neutralized!");
+      console.log(`FINISHED`);
+      return;
     }
     if (createdEvents.length) {
       //  Batch them up as dDB can only batch write 25 requests at a time. batch() returns a 2D array
