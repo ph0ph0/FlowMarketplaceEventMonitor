@@ -1,16 +1,17 @@
-const { getBlockCursorForEvent } = require("../BlockCursorTableService");
+const { events } = require("@onflow/fcl");
+const {
+  getBlockCursorForEvent,
+  saveBlockCursorForEvent,
+} = require("../BlockCursorTableService");
 const { getCurrentBlockHeight, searchBlockRange } = require("../FlowService");
 
+// TODO: Proper error handling
 // @params: [String]
 const getEvents = async (eventsArray) => {
   const contractAddress = "e223d8a629e49c68";
   const contractName = "FUSD";
   const eventName = "TokensWithdrawn";
 
-  // A.0x29e893174dd9b963.DappyContract.ListingAvailable
-  // `A.${"ListingAvailable"}.${"DappyContract"}.${"29e893174dd9b963"}`
-  // `A.${"e223d8a629e49c68"}.${"FUSD"}.${"TokensWithdrawn"}`
-  // const TEST_EVENTS_ARRAY = ["aMadeUpEvent", "aNonExistantEvent"];
   const TEST_EVENTS_ARRAY = [
     `A.e223d8a629e49c68.FUSD.TokensWithdrawn`,
     `A.29e893174dd9b963.DappyContract.ListingAvailable`,
@@ -37,7 +38,18 @@ const getEvents = async (eventsArray) => {
 
   console.log(`eventsObjectsArray: ${JSON.stringify(eventObjectsArray)}`);
 
-  // Event details
+  // We don't need to do anything with the returned array from map so don't need to assign it.
+  await Promise.all(
+    eventObjectsArray.map(
+      async (eventObject) =>
+        await saveBlockCursorForEvent(
+          eventObject.eventName,
+          eventObject.finalCursor
+        )
+    )
+  );
+
+  return eventObjectsArray;
 };
 
 getEvents();
