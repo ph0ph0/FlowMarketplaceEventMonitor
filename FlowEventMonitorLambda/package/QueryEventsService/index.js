@@ -7,11 +7,14 @@ const getEvents = async (eventsArray) => {
   const contractName = "FUSD";
   const eventName = "TokensWithdrawn";
 
-  // A.ListingAvailable.DappyContract.0x29e893174dd9b963
+  // A.0x29e893174dd9b963.DappyContract.ListingAvailable
   // `A.${"ListingAvailable"}.${"DappyContract"}.${"29e893174dd9b963"}`
   // `A.${"e223d8a629e49c68"}.${"FUSD"}.${"TokensWithdrawn"}`
   // const TEST_EVENTS_ARRAY = ["aMadeUpEvent", "aNonExistantEvent"];
-  const TEST_EVENTS_ARRAY = [`A.e223d8a629e49c68.FUSD.TokensWithdrawn`];
+  const TEST_EVENTS_ARRAY = [
+    `A.e223d8a629e49c68.FUSD.TokensWithdrawn`,
+    `A.29e893174dd9b963.DappyContract.ListingAvailable`,
+  ];
 
   const currentBlockHeight = await getCurrentBlockHeight();
   console.log(`!!!!tO cBH: ${typeof currentBlockHeight}`);
@@ -31,6 +34,8 @@ const getEvents = async (eventsArray) => {
       return await searchBlockRange(currentBlockHeight, cursor);
     })
   );
+
+  console.log(`eventsObjectsArray: ${JSON.stringify(eventObjectsArray)}`);
 
   // Event details
 };
