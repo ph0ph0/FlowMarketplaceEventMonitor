@@ -3,17 +3,18 @@ const { getCurrentBlockHeight, searchBlockRange } = require("../FlowService");
 
 // @params: [String]
 const getEvents = async (eventsArray) => {
-  const eventName = "ListingAvailable";
-  const contractAddress = "0x29e893174dd9b963";
-  const contractName = "DappyContract";
+  const contractAddress = "e223d8a629e49c68";
+  const contractName = "FUSD";
+  const eventName = "TokensWithdrawn";
 
+  // A.ListingAvailable.DappyContract.0x29e893174dd9b963
+  // `A.${"ListingAvailable"}.${"DappyContract"}.${"29e893174dd9b963"}`
+  // `A.${"e223d8a629e49c68"}.${"FUSD"}.${"TokensWithdrawn"}`
   // const TEST_EVENTS_ARRAY = ["aMadeUpEvent", "aNonExistantEvent"];
-  const TEST_EVENTS_ARRAY = [
-    `A.${"TokensWithdrawn"}.${"FUSD"}.${"e223d8a629e49c68"}`,
-    `A.${"ListingAvailable"}.${"DappyContract"}.${"0x29e893174dd9b963"}`,
-  ];
+  const TEST_EVENTS_ARRAY = [`A.e223d8a629e49c68.FUSD.TokensWithdrawn`];
 
   const currentBlockHeight = await getCurrentBlockHeight();
+  console.log(`!!!!tO cBH: ${typeof currentBlockHeight}`);
   console.log(`!!!CurrentBlockHeight: ${JSON.stringify(currentBlockHeight)}`);
 
   // We can use the eventName as an ID as it should be unique
