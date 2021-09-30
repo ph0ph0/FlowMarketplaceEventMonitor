@@ -8,14 +8,14 @@ const { getCurrentBlockHeight, searchBlockRange } = require("../FlowService");
 // TODO: Proper error handling
 // @params: [String]
 const getEvents = async (eventsArray) => {
-  const contractAddress = "e223d8a629e49c68";
-  const contractName = "FUSD";
-  const eventName = "TokensWithdrawn";
+  // const contractAddress = "e223d8a629e49c68";
+  // const contractName = "FUSD";
+  // const eventName = "TokensWithdrawn";
 
-  const TEST_EVENTS_ARRAY = [
-    `A.e223d8a629e49c68.FUSD.TokensWithdrawn`,
-    `A.29e893174dd9b963.DappyContract.ListingAvailable`,
-  ];
+  // const EVENTSARRAY = [
+  //   `A.e223d8a629e49c68.FUSD.TokensWithdrawn`,
+  //   `A.29e893174dd9b963.DappyContract.ListingAvailable`,
+  // ];
 
   const currentBlockHeight = await getCurrentBlockHeight();
   console.log(`!!!!tO cBH: ${typeof currentBlockHeight}`);
@@ -24,7 +24,7 @@ const getEvents = async (eventsArray) => {
   // We can use the eventName as an ID as it should be unique
   // Returns { eventName, blockCursor }
   const cursors = await Promise.all(
-    TEST_EVENTS_ARRAY.map(async (event) => {
+    eventsArray.map(async (event) => {
       return await getBlockCursorForEvent(event, currentBlockHeight);
     })
   );
