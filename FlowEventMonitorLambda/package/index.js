@@ -1,3 +1,4 @@
+require("dotenv").config();
 const fcl = require("@onflow/fcl");
 const sdk = require("@onflow/sdk");
 const { config } = fcl;
@@ -5,26 +6,45 @@ const {
   batchWriteListings,
   batchDeleteListings,
 } = require("./ListingsTableService");
-const { batch, deduplicateArrays } = require("./utils");
-const {
-  ListingsAvailableData,
-  ListingsCompletedData,
-} = require("./QueryEventsService");
+const { batch, deduplicateArrays, listingParser } = require("./utils");
+const { getEvents } = require("./QueryEventsService");
 
 const FlowEventMonitor = async (event) => {
-  // configure fcl
-  await config().put("accessNode.api", process.env.ACCESS_NODE);
-
+  await config().put("accessNode.api", "https://access-testnet.onflow.org");
+  const eventsArray = [process.env.LISTING_AVAILABLE];
+  console.log(`eventsArray to search: ${eventsArray}`);
   try {
     // Get the events from Flow
-    const listingsCreatedEvents = ListingsAvailableData;
-    const listingsDeletedEvents = ListingsCompletedData;
-    // console.log(`lc: ${listingsCreatedEvents}, lD: ${listingsDeletedEvents}`);
-    // Diff the events to remove duplicates from each array
-    const [createdEvents, deletedEvents] = deduplicateArrays(
-      listingsCreatedEvents,
-      listingsDeletedEvents
+    const eventObjects = await getEvents(eventsArray);
+    // TODO: Change rawCompletedEvents to Listing_Complete
+    const rawCreatedEvents = eventObjects.filter(
+      (e) => e.eventName === process.env.LISTING_AVAILABLE
+    )[0];
+    // const rawCompletedEvents = eventObjects.filter(
+    //   (e) => e.eventName === process.env.FUSD_WITHDRAWN
+    // )[0];
+    // Need to flatten the array as the events are grouped by block, we don't care about this.
+    const createdListingEvents = rawCreatedEvents.events
+      .flat()
+      .map((e) => listingParser(e));
+    console.log(
+      `createdListingEvents: ${JSON.stringify(createdListingEvents)}`
     );
+    console.log(`rCE: ${JSON.stringify(rawCreatedEvents)}`);
+    console.log(`rCE_E: ${JSON.stringify(rawCreatedEvents.events)}`);
+    // const completedListingEvents = rawCompletedEvents.events
+    //   .flat()
+    //   .map((e) => listingParser(e));
+    // console.log(
+    //   `completedListingEvents: ${JSON.stringify(createdListingEvents)}`
+    // );
+    return;
+
+    // Diff the events to remove duplicates from each array
+    // const [createEvents, deleteEvents] = deduplicateArrays(
+    //   createdListingEvents,
+    //   completedListingEvents
+    // );
     // console.log(`cE: ${createdEvents}, dE: ${deletedEvents}`);
     if (createdEvents.length == 0 && deletedEvents.length == 0) {
       console.log(`FINISHED`);
@@ -63,7 +83,7 @@ const FlowEventMonitor = async (event) => {
     //   `Error retrieving events for block range fromBlock=${fromBlock} toBlock=${toBlock}`,
     //   e
     // );
-    console.log(`e: ${e}`);
+    console.log(`Error in main: ${e}`);
   }
 };
 FlowEventMonitor();

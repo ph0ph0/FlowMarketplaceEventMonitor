@@ -5,9 +5,9 @@ const {
 } = require("../BlockCursorTableService");
 const { getCurrentBlockHeight, searchBlockRange } = require("../FlowService");
 
-// TODO: Proper error handling
+// TODO: Seriously needs proper error handling
 // @params: [String]
-const getEvents = async (eventsArray) => {
+module.exports.getEvents = async (eventsArray) => {
   // const contractAddress = "e223d8a629e49c68";
   // const contractName = "FUSD";
   // const eventName = "TokensWithdrawn";
@@ -16,43 +16,48 @@ const getEvents = async (eventsArray) => {
   //   `A.e223d8a629e49c68.FUSD.TokensWithdrawn`,
   //   `A.29e893174dd9b963.DappyContract.ListingAvailable`,
   // ];
+  try {
+    const currentBlockHeight = await getCurrentBlockHeight();
+    console.log(`!!!!tO cBH: ${typeof currentBlockHeight}`);
+    console.log(`!!!CurrentBlockHeight: ${JSON.stringify(currentBlockHeight)}`);
 
-  const currentBlockHeight = await getCurrentBlockHeight();
-  console.log(`!!!!tO cBH: ${typeof currentBlockHeight}`);
-  console.log(`!!!CurrentBlockHeight: ${JSON.stringify(currentBlockHeight)}`);
+    // We can use the eventName as an ID as it should be unique
+    // Returns { eventName, blockCursor }
+    const cursors = await Promise.all(
+      eventsArray.map(async (event) => {
+        return await getBlockCursorForEvent(event, currentBlockHeight);
+      })
+    );
+    console.log(`!!!cursors: ${JSON.stringify(cursors)}`);
 
-  // We can use the eventName as an ID as it should be unique
-  // Returns { eventName, blockCursor }
-  const cursors = await Promise.all(
-    eventsArray.map(async (event) => {
-      return await getBlockCursorForEvent(event, currentBlockHeight);
-    })
-  );
-  console.log(`!!!cursors: ${JSON.stringify(cursors)}`);
+    const eventObjectsArray = await Promise.all(
+      cursors.map(async (cursor) => {
+        return await searchBlockRange(currentBlockHeight, cursor);
+      })
+    );
 
-  const eventObjectsArray = await Promise.all(
-    cursors.map(async (cursor) => {
-      return await searchBlockRange(currentBlockHeight, cursor);
-    })
-  );
+    console.log(`eventsObjectsArray: ${JSON.stringify(eventObjectsArray)}`);
 
-  console.log(`eventsObjectsArray: ${JSON.stringify(eventObjectsArray)}`);
+    // {"xxx": {events:[], fC: "ddd"},"yyy": {events:[], fC: "ddd"}}
 
-  // We don't need to do anything with the returned array from map so don't need to assign it.
-  await Promise.all(
-    eventObjectsArray.map(
-      async (eventObject) =>
-        await saveBlockCursorForEvent(
-          eventObject.eventName,
-          eventObject.finalCursor
-        )
-    )
-  );
+    // We don't need to do anything with the returned array from map so don't need to assign it.
+    await Promise.all(
+      eventObjectsArray.map(
+        async (eventObject) =>
+          await saveBlockCursorForEvent(
+            eventObject.eventName,
+            eventObject.finalCursor
+          )
+      )
+    );
 
-  return eventObjectsArray;
+    return eventObjectsArray;
+  } catch (error) {
+    throw new Error(`QueryEventsService getEvents(): ${error}`);
+  }
 };
 
-getEvents();
+// getEvents();
 
 module.exports.getListingCompletedEvents = async () => {
   // Get the most recent sealed block

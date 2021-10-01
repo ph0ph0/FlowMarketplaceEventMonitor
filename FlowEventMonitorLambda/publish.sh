@@ -1,5 +1,5 @@
 # Make sure to switch to correct AWS account in the CLI before running
-# Use `export AWS_PROFILE=crypto-dappies` in terminal to switch for this session
+# Use `export AWS_PROFILE=cryptodappies` in terminal to switch for this session
 
 rm index.zip
 cd package
