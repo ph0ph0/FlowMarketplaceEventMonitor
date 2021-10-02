@@ -17,12 +17,13 @@ module.exports.getEvents = async (eventsArray) => {
   //   `A.29e893174dd9b963.DappyContract.ListingAvailable`,
   // ];
   try {
+    // Firstly get the blockheight using FCL
     const currentBlockHeight = await getCurrentBlockHeight();
     console.log(`!!!!tO cBH: ${typeof currentBlockHeight}`);
     console.log(`!!!CurrentBlockHeight: ${JSON.stringify(currentBlockHeight)}`);
 
     // We can use the eventName as an ID as it should be unique
-    // Returns { eventName, blockCursor }
+    // Returns [{ eventName, events, finalCursor }]
     const cursors = await Promise.all(
       eventsArray.map(async (event) => {
         return await getBlockCursorForEvent(event, currentBlockHeight);
@@ -30,6 +31,7 @@ module.exports.getEvents = async (eventsArray) => {
     );
     console.log(`!!!cursors: ${JSON.stringify(cursors)}`);
 
+    // Search the block range for events
     const eventObjectsArray = await Promise.all(
       cursors.map(async (cursor) => {
         return await searchBlockRange(currentBlockHeight, cursor);
@@ -40,6 +42,7 @@ module.exports.getEvents = async (eventsArray) => {
 
     // {"xxx": {events:[], fC: "ddd"},"yyy": {events:[], fC: "ddd"}}
 
+    // Map over the eventObjectsArray and save the block cursors to dDB
     // We don't need to do anything with the returned array from map so don't need to assign it.
     await Promise.all(
       eventObjectsArray.map(

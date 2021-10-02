@@ -1,9 +1,7 @@
 const fcl = require("@onflow/fcl");
-const { config } = fcl;
 
 module.exports.getCurrentBlockHeight = async () => {
   try {
-    await config().put("accessNode.api", "https://access-testnet.onflow.org");
     const block = await fcl.send([fcl.getBlock(true)]);
     const decoded = await fcl.decode(block);
     return decoded.height;

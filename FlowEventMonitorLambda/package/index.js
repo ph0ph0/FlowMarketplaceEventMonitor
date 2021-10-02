@@ -1,6 +1,5 @@
 require("dotenv").config();
 const fcl = require("@onflow/fcl");
-const sdk = require("@onflow/sdk");
 const { config } = fcl;
 const {
   batchWriteListings,
@@ -10,13 +9,13 @@ const { batch, deduplicateArrays, listingParser } = require("./utils");
 const { getEvents } = require("./QueryEventsService");
 
 const FlowEventMonitor = async (event) => {
-  await config().put("accessNode.api", "https://access-testnet.onflow.org");
+  // Configure FCL
+  await config().put("accessNode.api", process.env.ACCESS_NODE);
   const eventsArray = [process.env.LISTING_AVAILABLE];
   console.log(`eventsArray to search: ${eventsArray}`);
   try {
     // Get the events from Flow
     const eventObjects = await getEvents(eventsArray);
-    // TODO: Change rawCompletedEvents to Listing_Complete
     const rawCreatedEvents = eventObjects.filter(
       (e) => e.eventName === process.env.LISTING_AVAILABLE
     )[0];
