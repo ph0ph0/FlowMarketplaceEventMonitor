@@ -1,16 +1,11 @@
-// const AWS = require("aws-sdk");
-// const ddb = new AWS.DynamoDB.DocumentClient({ region: `us-east-1` });
+const AWS = require("aws-sdk");
+const ddb = new AWS.DynamoDB.DocumentClient({ region: `us-east-1` });
 
 module.exports.batchWriteListings = async (items) => {
   var writeItems = [];
 
   for (var i = 0; i < items.length; i++) {
-    var dappyObject = {
-      uuid: items[i]?.data?.uuid,
-      address: items[i]?.data?.address,
-      dna: items[i]?.data?.dna,
-      name: items[i]?.data?.name,
-    };
+    const dappyObject = items[i];
 
     const writeItem = {
       PutRequest: {
@@ -22,34 +17,31 @@ module.exports.batchWriteListings = async (items) => {
 
   const params = {
     RequestItems: {
-      ListingsTable: writeItems,
+      ListingTable: writeItems,
     },
   };
 
   console.log(`Batch writing: ${JSON.stringify(params)}`);
-  //   try {
-  //     console.log(`Trying to batch write`);
-  //     const result = await ddb.batchWrite(params).promise();
-  //     // TODO: Handle unprocessed items
-  //     console.log(`Unprocesssed Items: ${JSON.stringify(result)}`);
-  //     console.log(`Finished batch write to dDB`);
-  //   } catch (error) {
-  //     console.log(`Error batch writing to dDB: ${error}`);
-  //   }
+  try {
+    console.log(`Trying to batch write`);
+    const result = await ddb.batchWrite(params).promise();
+    // TODO: Handle unprocessed items
+    console.log(`Unprocesssed Items: ${JSON.stringify(result)}`);
+    console.log(`Finished batch write to dDB`);
+  } catch (error) {
+    throw new Error(`ListingsTableService batchWriteListings(): ${error}`);
+  }
 };
 
 module.exports.batchDeleteListings = async (items) => {
   var deleteItemIDs = [];
 
   for (var i = 0; i < items.length; i++) {
-    const itemID = items[i]?.data?.uuid;
-    const itemAddress = items[i]?.data?.address;
-    console.log(`itemID: ${itemID}`);
+    const listingResourceID = items[i].listingResourceID;
     const writeItem = {
       DeleteRequest: {
         Key: {
-          uuid: itemID,
-          address: itemAddress,
+          listingResourceID,
         },
       },
     };
@@ -58,18 +50,18 @@ module.exports.batchDeleteListings = async (items) => {
 
   const params = {
     RequestItems: {
-      ListingsTable: deleteItemIDs,
+      ListingTable: deleteItemIDs,
     },
   };
 
   console.log(`Batch writing: ${JSON.stringify(params)}`);
-  //   try {
-  //     console.log(`Trying to batch delete`);
-  //     const result = await ddb.batchWrite(params).promise();
-  //     // TODO: Handle unprocessed items
-  //     console.log(`Unprocesssed Items: ${JSON.stringify(result)}`);
-  //     console.log(`Finished batch write to dDB`);
-  //   } catch (error) {
-  //     console.log(`Error batch writing to dDB: ${error}`);
-  //   }
+  try {
+    console.log(`Trying to batch delete`);
+    const result = await ddb.batchWrite(params).promise();
+    // TODO: Handle unprocessed items
+    console.log(`Unprocesssed Items: ${JSON.stringify(result)}`);
+    console.log(`Finished batch write to dDB`);
+  } catch (error) {
+    console.log(`Error batch deleting dDB: ${error}`);
+  }
 };

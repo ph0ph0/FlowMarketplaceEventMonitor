@@ -73,15 +73,6 @@ module.exports.getListingCompletedEvents = async () => {
   // startingBlockHeight = decoded.height
   // console.log(`height: ${startingBlockHeight}`)
 
-  // Get the block cursor
-  // If no block cursor, set it to the current block height - 249; that's the largest spread you can do.
-  // Query dDB to get bH.
-  // TODO: Update fromBlock with cursor
-
-  // TODO: Uncomment
-  // const fromBlock = startingBlockHeight - 249
-  // const toBlock = startingBlockHeight
-
   // Event details
   const contractAddress = "e223d8a629e49c68";
   const contractName = "FUSD";

@@ -33,14 +33,28 @@ module.exports.deduplicateArrays = (arr1, arr2) => {
 };
 
 // TODO: Update event properties when event/emit is finalised
-module.exports.listingParser = (eventObject) => {
+module.exports.createdListingParser = (eventObject) => {
   console.log(`eventObject to be parsed: ${JSON.stringify(eventObject)}`);
   const data = eventObject.data;
   const event = {
-    uuid: uuid,
-    address: data.address,
-    dna: data.dna,
+    storefrontAddress: data.storefrontAddress,
+    listingResourceID: data.listingResourceID,
+    dappyID: data.dappyID,
     name: data.name,
+    dna: data.dna,
+    ftVaultType: data.ftVaultType,
+    price: data.price,
+  };
+  return event;
+};
+
+module.exports.completedListingParser = (eventObject) => {
+  console.log(
+    `completed eventObject to be parsed: ${JSON.stringify(eventObject)}`
+  );
+  const data = eventObject.data;
+  const event = {
+    listingResourceID: data.listingResourceID,
   };
   return event;
 };

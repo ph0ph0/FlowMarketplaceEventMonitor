@@ -22,7 +22,10 @@ module.exports.searchBlockRange = async (latestBlockHeight, cursor) => {
   console.log(`**********************`);
   console.log(`Latest blockHeight: ${latestBlockHeight}`);
   try {
-    const stepSize = 249;
+    const stepSize = parseInt(process.env.BLOCK_RANGE_STEP_SIZE);
+    console.log(
+      `&&&&&&&&&&&&&&&&&&&& stepSize: ${stepSize} & typeof: ${typeof stepSize}`
+    );
     const { eventName, blockCursor } = cursor;
     if (latestBlockHeight <= blockCursor) {
       throw new Error(
