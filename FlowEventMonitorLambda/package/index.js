@@ -15,7 +15,7 @@ const { getEvents } = require("./QueryEventsService");
 
 // Need to figure out how to make this serial and atomic!
 
-const FlowEventMonitor = async (event) => {
+exports.handler = async (event, context, callback) => {
   // Configure FCL
   await config().put("accessNode.api", process.env.ACCESS_NODE);
   const eventsArray = [
@@ -39,34 +39,23 @@ const FlowEventMonitor = async (event) => {
     const createdListingEvents = rawCreatedEvents.events
       .flat()
       .map((e) => createdListingParser(e));
-    // console.log(
-    //   `createdListingEvents: ${JSON.stringify(createdListingEvents)}`
-    // );
-    // console.log(`rCE: ${JSON.stringify(rawCreatedEvents)}`);
     const completedListingEvents = rawCompletedEvents.events
       .flat()
       .map((e) => completedListingParser(e));
-    console.log(
-      `completedListingEvents: ${JSON.stringify(createdListingEvents)}`
-    );
 
     // Diff the events to remove duplicates from each array
-    // const [createEvents, deleteEvents] = deduplicateArrays(
-    //   createdListingEvents,
-    //   completedListingEvents
-    // );
-    // console.log(`cE: ${createdEvents}, dE: ${completedListingEvents}`);
-    if (
-      createdListingEvents.length == 0 &&
-      completedListingEvents.length == 0
-    ) {
+    const [createEvents, deleteEvents] = deduplicateArrays(
+      createdListingEvents,
+      completedListingEvents
+    );
+    console.log(`cE: ${createEvents}, dE: ${deleteEvents}`);
+    if (createEvents.length == 0 && deleteEvents.length == 0) {
       console.log(`FINISHED`);
-      // RESOLVE
       return;
     }
-    if (createdListingEvents.length) {
+    if (createEvents.length) {
       //  Batch them up as dDB can only batch write 25 requests at a time. batch() returns a 2D array
-      const batchedEvents = batch(createdListingEvents, 25);
+      const batchedEvents = batch(createEvents, 25);
       // console.log(`BatchedEvents: ${JSON.stringify(batchedEvents)}`);
 
       // Then loop through each nested array of 25 events
@@ -76,28 +65,22 @@ const FlowEventMonitor = async (event) => {
     }
 
     //  Repeat for delete
-    if (completedListingEvents.length) {
-      const batchedEvents = batch(completedListingEvents, 25);
+    if (deleteEvents.length) {
+      const batchedEvents = batch(deleteEvents, 25);
       // console.log(`BatchedDelEvents: ${JSON.stringify(batchedEvents)}`);
       for (var i = 0; i < batchedEvents.length; i++) {
         await batchDeleteListings(batchedEvents[i]);
       }
     }
-    // TODO: Figure out what this means in KI
-    // decoded.forEach(async (event) => await this.onEvent(event));
-    // // Record the last block that we saw an event for
-    // blockCursor = await this.blockCursorService.updateBlockCursorById(
-    //   blockCursor.id,
-    //   toBlock
-    // );
-
     console.log(`FINISHED`);
+    return;
   } catch (e) {
     // console.error(
     //   `Error retrieving events for block range fromBlock=${fromBlock} toBlock=${toBlock}`,
     //   e
     // );
     console.log(`Error in main: ${e}`);
+    return new Error(`Error in main ${e}`);
   }
 };
-FlowEventMonitor();
+// FlowEventMonitor();
