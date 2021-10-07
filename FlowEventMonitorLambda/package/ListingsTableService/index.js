@@ -1,6 +1,11 @@
 const AWS = require("aws-sdk");
 const ddb = new AWS.DynamoDB.DocumentClient({ region: `us-east-1` });
 
+/**
+ * Batch writes created listing objects to dDB
+ * @param {object} items
+ * @returns {void}
+ */
 module.exports.batchWriteListings = async (items) => {
   var writeItems = [];
 
@@ -33,6 +38,11 @@ module.exports.batchWriteListings = async (items) => {
   }
 };
 
+/**
+ * Batch deletes completed listings in dDB
+ * @param {object} items
+ * @returns {void}
+ */
 module.exports.batchDeleteListings = async (items) => {
   var deleteItemIDs = [];
 

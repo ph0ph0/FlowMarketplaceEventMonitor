@@ -1,5 +1,9 @@
 const fcl = require("@onflow/fcl");
 
+/**
+ * Gets the current block height from the Flow blockchain
+ * @returns {int}
+ */
 module.exports.getCurrentBlockHeight = async () => {
   try {
     const block = await fcl.send([fcl.getBlock(true)]);
@@ -7,17 +11,16 @@ module.exports.getCurrentBlockHeight = async () => {
     return decoded.height;
   } catch (error) {
     console.log(`Error fetching current block height`);
-    throw new Error(`Flow Service getCurrentBLockHeight: ${error}`);
+    throw new Error(`Flow Service getCurrentBlockHeight: ${error}`);
   }
 };
 
-// Flow service
-const cursors = [
-  { eventName: "aMadeUpEvent", blockCursor: 4666300 },
-  { eventName: "secondEvent", blockCursor: 4667300 },
-  { eventName: "third", blockCursor: 4666746 },
-];
-
+/**
+ * Searches for events between the latest block height and the blockheight saved for this event in dDB.
+ * @param {int} latestBlockHeight
+ * @param {{eventName: string, blockCursor: int}} cursor
+ * @returns {{eventName: string, events: object, finalCursor: int}}
+ */
 module.exports.searchBlockRange = async (latestBlockHeight, cursor) => {
   console.log(`**********************`);
   console.log(`Latest blockHeight: ${latestBlockHeight}`);
@@ -63,22 +66,3 @@ module.exports.searchBlockRange = async (latestBlockHeight, cursor) => {
     throw new Error(`FlowService searchBlockRange(): ${error}`);
   }
 };
-
-// const run = async () => {
-//   const x = await Promise.all(
-//     cursors.map(async (cursor) => await searchBlockRange(4666900, cursor))
-//   );
-//   console.log(`events: ${JSON.stringify(x)}`);
-// };
-// run();
-
-// const result = await fcl.send([
-//   fcl.getEventsAtBlockHeightRange(`A.${eventName}`, fromBlock, toBlock),
-// ]);
-// console.log(`RESULT: ${JSON.stringify(result)}`);
-// const decoded = await fcl.decode(result);
-// console.log(`Events: ${JSON.stringify(decoded)}`);
-
-// `A.${contractAddress}.${contractName}.${eventName}`,
-// A.e223d8a629e49c68.FUSD.TokensWithdrawn
-// A.e223d8a629e49c68.FUSD.TokensWithdrawn

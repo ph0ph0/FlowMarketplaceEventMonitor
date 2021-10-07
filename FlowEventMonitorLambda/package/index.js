@@ -1,3 +1,5 @@
+// TODO: Remove console.log calls
+
 require("dotenv").config();
 const fcl = require("@onflow/fcl");
 const { config } = fcl;
@@ -13,9 +15,7 @@ const {
 } = require("./utils");
 const { getEvents } = require("./QueryEventsService");
 
-// Need to figure out how to make this serial and atomic!
-
-exports.handler = async (event, context, callback) => {
+exports.handler = async (event) => {
   // Configure FCL
   await config().put("accessNode.api", process.env.ACCESS_NODE);
   const eventsArray = [
@@ -83,4 +83,3 @@ exports.handler = async (event, context, callback) => {
     return new Error(`Error in main ${e}`);
   }
 };
-// FlowEventMonitor();

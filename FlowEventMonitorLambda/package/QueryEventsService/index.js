@@ -1,12 +1,15 @@
-const { events } = require("@onflow/fcl");
 const {
   getBlockCursorForEvent,
   saveBlockCursorForEvent,
 } = require("../BlockCursorTableService");
 const { getCurrentBlockHeight, searchBlockRange } = require("../FlowService");
 
-// TODO: Seriously needs proper error handling
-// @params: [String]
+/**
+ * When passed an array of events, will search the Flow blockchain for them.
+ * @param {[string]} eventsArray
+//  * TODO: What does it return exactly?
+ * @returns {[object]}
+ */
 module.exports.getEvents = async (eventsArray) => {
   try {
     // Firstly get the blockheight using FCL
@@ -23,6 +26,8 @@ module.exports.getEvents = async (eventsArray) => {
     console.log(`!!!cursors: ${JSON.stringify(cursors)}`);
 
     // Search the block range for events
+    // Returns an array of nested arrays, containing raw event objects grouped by block
+    // [[object], ...n[object]]
     const eventObjectsArray = await Promise.all(
       cursors.map(async (cursor) => {
         return await searchBlockRange(currentBlockHeight, cursor);

@@ -1,6 +1,13 @@
 const AWS = require("aws-sdk");
 const ddb = new AWS.DynamoDB.DocumentClient({ region: `us-east-1` });
 
+/**
+ * Retrieves the latest block cursor for the passed in event from dDB.
+ *  If no block cursor has been saved, it returns the current block height - fixedBlockRange
+ * @param {string} event
+ * @param {int} currentBlockHeight
+ * @returns {{eventName: string, blockCursor: int}}
+ */
 module.exports.getBlockCursorForEvent = async (event, currentBlockHeight) => {
   // Event can be used as ID as it should be unique
   // If we don't have a cursor for that event,
@@ -30,6 +37,12 @@ module.exports.getBlockCursorForEvent = async (event, currentBlockHeight) => {
   }
 };
 
+/**
+ * Saves to dDB the most recent block cursor for an event
+ * @param {string} eventName
+ * @param {int} finalCursor
+ * @returns {void}
+ */
 module.exports.saveBlockCursorForEvent = async (eventName, finalCursor) => {
   console.log(`!!!!Saving blockCursor ${finalCursor} for ${eventName}`);
   const object = {
