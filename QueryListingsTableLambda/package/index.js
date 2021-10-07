@@ -1,7 +1,7 @@
 const AWS = require("aws-sdk");
-const dDB = new AWS.DynamoDB.DocumentClient({ region: `us-east-1` });
+const ddb = new AWS.DynamoDB.DocumentClient({ region: `us-east-1` });
 
-const qltl = (event) => {
+exports.handler = async (event) => {
   console.log(`Event: ${event}`);
 
   const tableName = "ListingTable";
@@ -10,26 +10,44 @@ const qltl = (event) => {
   const params = {
     TableName: tableName,
     IndexName: indexName,
-    KeyConditionExpression:
-      "#staticKey = :staticKeyValue and #timestamp = :timestampValue",
+    KeyConditionExpression: "#key = :staticKey",
     ExpressionAttributeNames: {
-      "#staticKey": "staticKey",
-      "#timestamp": "timestamp",
+      "#key": "staticKey",
     },
     ExpressionAttributeValues: {
-      ":staticKeyValue": 1,
-      ":factorytimestampValueValue": factory,
+      ":staticKey": 1,
     },
     Limit: 20,
+    ScanIndexForward: false,
+  };
+
+  const headers = {
+    "Content-Type": "application/json",
+    "Access-Control-Allow-Headers":
+      "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token",
+    "Access-Control-Allow-Methods": "OPTIONS,POST,ANY",
+    "Access-Control-Allow-Credentials": true,
+    "Access-Control-Allow-Origin": "*",
+    "X-Requested-With": "*",
   };
 
   try {
     const data = await ddb.query(params).promise();
     // Set a default value for the blockCursor
     console.log(`Data: ${JSON.stringify(data)}`);
+    return {
+      isBase64Encoded: false,
+      statusCode: 202,
+      headers: headers,
+      body: JSON.stringify(data),
+    };
   } catch (error) {
-    console.log(`Error querying dDB`);
+    console.log(`Error querying dDB: ${error}`);
+    return {
+      isBase64Encoded: false,
+      statusCode: 500, // return error response
+      headers: headers,
+      body: error,
+    };
   }
 };
-
-qltl();
