@@ -55,7 +55,6 @@ module.exports.saveBlockCursorForEvent = async (eventName, finalCursor) => {
   };
   try {
     const data = await ddb.put(params).promise();
-    console.log(`Block cursor save data: ${JSON.stringify(data)}`);
   } catch (error) {
     console.log(`Error saving block cursor for event: ${error}`);
     throw new Error(

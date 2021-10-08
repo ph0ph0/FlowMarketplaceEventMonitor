@@ -11,7 +11,7 @@ exports.handler = async (event) => {
   };
   try {
     console.log(`Invoking FEML`);
-    await lambda.invoke(invokeLambdaParams).promise(); // await is essential, it will not work without for some reason
+    await lambda.invoke(invokeLambdaParams).promise(); // await is essential, it will not work without it
     const isCountReached = index >= event.iterator.Payload.count;
     const count = event.iterator.Payload.count;
     console.log(

@@ -26,9 +26,6 @@ module.exports.searchBlockRange = async (latestBlockHeight, cursor) => {
   console.log(`Latest blockHeight: ${latestBlockHeight}`);
   try {
     const stepSize = parseInt(process.env.BLOCK_RANGE_STEP_SIZE);
-    console.log(
-      `&&&&&&&&&&&&&&&&&&&& stepSize: ${stepSize} & typeof: ${typeof stepSize}`
-    );
     const { eventName, blockCursor } = cursor;
     if (latestBlockHeight <= blockCursor) {
       throw new Error(
@@ -49,7 +46,6 @@ module.exports.searchBlockRange = async (latestBlockHeight, cursor) => {
       const result = await fcl.send([
         fcl.getEventsAtBlockHeightRange(eventName, fromBlock, toBlock),
       ]);
-      console.log(`RESULT: ${JSON.stringify(result)}`);
       const decoded = await fcl.decode(result);
       console.log(`Events: ${JSON.stringify(decoded)}`);
       finalCursor = fromBlock;
