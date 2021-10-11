@@ -1,0 +1,666 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: ""
+Resources:
+  IAMManagedPolicy:
+    Type: "AWS::IAM::ManagedPolicy"
+    Properties:
+      ManagedPolicyName: "XRayAccessPolicy-a02ad460-2717-41c7-95d1-6220ef4c77a0"
+      Path: "/service-role/"
+      PolicyDocument: |
+          {
+              "Version": "2012-10-17",
+              "Statement": [
+                  {
+                      "Effect": "Allow",
+                      "Action": [
+                          "xray:PutTraceSegments",
+                          "xray:PutTelemetryRecords",
+                          "xray:GetSamplingRules",
+                          "xray:GetSamplingTargets"
+                      ],
+                      "Resource": [
+                          "*"
+                      ]
+                  }
+              ]
+          }
+
+  IAMManagedPolicy2:
+    Type: "AWS::IAM::ManagedPolicy"
+    Properties:
+      ManagedPolicyName: "LambdaInvokeScopedAccessPolicy-4a3a2918-5234-4b17-aac9-8b54a36ff10e"
+      Path: "/service-role/"
+      PolicyDocument: !Sub |
+          {
+              "Version": "2012-10-17",
+              "Statement": [
+                  {
+                      "Effect": "Allow",
+                      "Action": [
+                          "lambda:InvokeFunction"
+                      ],
+                      "Resource": [
+                          "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:Iterator:*"
+                      ]
+                  },
+                  {
+                      "Effect": "Allow",
+                      "Action": [
+                          "lambda:InvokeFunction"
+                      ],
+                      "Resource": [
+                          "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:Iterator"
+                      ]
+                  }
+              ]
+          }
+
+  IAMManagedPolicy3:
+    Type: "AWS::IAM::ManagedPolicy"
+    Properties:
+      ManagedPolicyName: "XRayAccessPolicy-2085f250-2b3d-4111-9292-bda7cfb0856b"
+      Path: "/service-role/"
+      PolicyDocument: |
+          {
+              "Version": "2012-10-17",
+              "Statement": [
+                  {
+                      "Effect": "Allow",
+                      "Action": [
+                          "xray:PutTraceSegments",
+                          "xray:PutTelemetryRecords",
+                          "xray:GetSamplingRules",
+                          "xray:GetSamplingTargets"
+                      ],
+                      "Resource": [
+                          "*"
+                      ]
+                  }
+              ]
+          }
+
+  IAMManagedPolicy4:
+    Type: "AWS::IAM::ManagedPolicy"
+    Properties:
+      ManagedPolicyName: "CloudWatchLogsDeliveryFullAccessPolicy-ae735f2c-8898-40db-bbdd-cba8d153f537"
+      Path: "/service-role/"
+      PolicyDocument: |
+          {
+              "Version": "2012-10-17",
+              "Statement": [
+                  {
+                      "Effect": "Allow",
+                      "Action": [
+                          "logs:CreateLogDelivery",
+                          "logs:GetLogDelivery",
+                          "logs:UpdateLogDelivery",
+                          "logs:DeleteLogDelivery",
+                          "logs:ListLogDeliveries",
+                          "logs:PutResourcePolicy",
+                          "logs:DescribeResourcePolicies",
+                          "logs:DescribeLogGroups"
+                      ],
+                      "Resource": "*"
+                  }
+              ]
+          }
+
+  IAMManagedPolicy5:
+    Type: "AWS::IAM::ManagedPolicy"
+    Properties:
+      ManagedPolicyName: "AWSLambdaBasicExecutionRole-6086293f-51de-4f0c-a9fd-686a1bfb0a72"
+      Path: "/service-role/"
+      PolicyDocument: !Sub |
+          {
+              "Version": "2012-10-17",
+              "Statement": [
+                  {
+                      "Effect": "Allow",
+                      "Action": "logs:CreateLogGroup",
+                      "Resource": "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:*"
+                  },
+                  {
+                      "Effect": "Allow",
+                      "Action": [
+                          "logs:CreateLogStream",
+                          "logs:PutLogEvents"
+                      ],
+                      "Resource": [
+                          "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/QueryListingTableLambda:*"
+                      ]
+                  }
+              ]
+          }
+
+  IAMManagedPolicy6:
+    Type: "AWS::IAM::ManagedPolicy"
+    Properties:
+      ManagedPolicyName: "DynamoDBReadListingTableTimestampIndex"
+      Path: "/"
+      PolicyDocument: !Sub |
+          {
+              "Version": "2012-10-17",
+              "Statement": [
+                  {
+                      "Sid": "VisualEditor0",
+                      "Effect": "Allow",
+                      "Action": [
+                          "dynamodb:BatchGetItem",
+                          "dynamodb:GetItem",
+                          "dynamodb:Scan",
+                          "dynamodb:Query"
+                      ],
+                      "Resource": [
+                          "arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/ListingTable",
+                          "arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/ListingTable/index/staticKey-timestamp-index"
+                      ]
+                  }
+              ]
+          }
+
+  IAMManagedPolicy7:
+    Type: "AWS::IAM::ManagedPolicy"
+    Properties:
+      ManagedPolicyName: "AWSLambdaBasicExecutionRole-ffdc617d-d386-4649-9083-e6efbd92081c"
+      Path: "/service-role/"
+      PolicyDocument: !Sub |
+          {
+              "Version": "2012-10-17",
+              "Statement": [
+                  {
+                      "Effect": "Allow",
+                      "Action": "logs:CreateLogGroup",
+                      "Resource": "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:*"
+                  },
+                  {
+                      "Effect": "Allow",
+                      "Action": [
+                          "logs:CreateLogStream",
+                          "logs:PutLogEvents"
+                      ],
+                      "Resource": [
+                          "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/Iterator:*"
+                      ]
+                  }
+              ]
+          }
+
+  IAMManagedPolicy8:
+    Type: "AWS::IAM::ManagedPolicy"
+    Properties:
+      ManagedPolicyName: "InvokeIteratorLambda"
+      Path: "/"
+      PolicyDocument: !Sub |
+          {
+              "Version": "2012-10-17",
+              "Statement": [
+                  {
+                      "Sid": "VisualEditor0",
+                      "Effect": "Allow",
+                      "Action": "lambda:InvokeFunction",
+                      "Resource": "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:FlowEventMonitorLambda"
+                  }
+              ]
+          }
+
+  IAMManagedPolicy9:
+    Type: "AWS::IAM::ManagedPolicy"
+    Properties:
+      ManagedPolicyName: "AWSLambdaBasicExecutionRole-c2afb52f-85db-4045-a3ef-0cb5589b61e2"
+      Path: "/service-role/"
+      PolicyDocument: !Sub |
+          {
+              "Version": "2012-10-17",
+              "Statement": [
+                  {
+                      "Effect": "Allow",
+                      "Action": "logs:CreateLogGroup",
+                      "Resource": "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:*"
+                  },
+                  {
+                      "Effect": "Allow",
+                      "Action": [
+                          "logs:CreateLogStream",
+                          "logs:PutLogEvents"
+                      ],
+                      "Resource": [
+                          "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/FlowEventMonitorLambda:*"
+                      ]
+                  }
+              ]
+          }
+
+  IAMManagedPolicy10:
+    Type: "AWS::IAM::ManagedPolicy"
+    Properties:
+      ManagedPolicyName: "DynamoDBListingsTableBatchWriteOnly"
+      Path: "/"
+      PolicyDocument: !Sub |
+          {
+              "Version": "2012-10-17",
+              "Statement": [
+                  {
+                      "Sid": "VisualEditor0",
+                      "Effect": "Allow",
+                      "Action": [
+                          "dynamodb:BatchWriteItem",
+                          "dynamodb:PutItem"
+                      ],
+                      "Resource": "arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/ListingTable"
+                  }
+              ]
+          }
+
+  IAMManagedPolicy11:
+    Type: "AWS::IAM::ManagedPolicy"
+    Properties:
+      ManagedPolicyName: "DynamoDBBlockCursorTablePutandGet"
+      Path: "/"
+      PolicyDocument: !Sub |
+          {
+              "Version": "2012-10-17",
+              "Statement": [
+                  {
+                      "Sid": "VisualEditor0",
+                      "Effect": "Allow",
+                      "Action": [
+                          "dynamodb:PutItem",
+                          "dynamodb:GetItem"
+                      ],
+                      "Resource": "arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/BlockCursorTable"
+                  }
+              ]
+          }
+
+  IAMManagedPolicy12:
+    Type: "AWS::IAM::ManagedPolicy"
+    Properties:
+      ManagedPolicyName: "AWSLambdaBasicExecutionRole-38528ada-109c-4304-af03-3e77a9d4b097"
+      Path: "/service-role/"
+      PolicyDocument: !Sub |
+          {
+              "Version": "2012-10-17",
+              "Statement": [
+                  {
+                      "Effect": "Allow",
+                      "Action": "logs:CreateLogGroup",
+                      "Resource": "arn:aws:logs:eu-west-2:${AWS::AccountId}:*"
+                  },
+                  {
+                      "Effect": "Allow",
+                      "Action": [
+                          "logs:CreateLogStream",
+                          "logs:PutLogEvents"
+                      ],
+                      "Resource": [
+                          "arn:aws:logs:eu-west-2:${AWS::AccountId}:log-group:/aws/lambda/FlowEventMonitorLambda:*"
+                      ]
+                  }
+              ]
+          }
+
+  IAMManagedPolicy13:
+    Type: "AWS::IAM::ManagedPolicy"
+    Properties:
+      ManagedPolicyName: "InvokeStepFunctionsStateMachine"
+      Path: "/service-role/"
+      PolicyDocument: !Sub |
+          {
+              "Version": "2012-10-17",
+              "Statement": [
+                  {
+                      "Effect": "Allow",
+                      "Action": [
+                          "states:StartExecution"
+                      ],
+                      "Resource": [
+                          "${StepFunctionsStateMachine}"
+                      ]
+                  }
+              ]
+          }
+
+  IAMRole1:
+    Type: "AWS::IAM::Role"
+    Properties:
+      Path: "/service-role/"
+      RoleName: "QueryListingTableLambda-role-m6oubphr"
+      AssumeRolePolicyDocument: "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Principal\":{\"Service\":\"lambda.amazonaws.com\"},\"Action\":\"sts:AssumeRole\"}]}"
+      MaxSessionDuration: 3600
+      ManagedPolicyArns: 
+      - !Ref IAMManagedPolicy6
+      - !Ref IAMManagedPolicy5
+
+  IAMRole2:
+    Type: "AWS::IAM::Role"
+    Properties:
+      Path: "/service-role/"
+      RoleName: "FlowEventMonitorLambda-role-s7hwgaqg"
+      AssumeRolePolicyDocument: "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Principal\":{\"Service\":\"lambda.amazonaws.com\"},\"Action\":\"sts:AssumeRole\"}]}"
+      MaxSessionDuration: 3600
+      ManagedPolicyArns: 
+      - !Ref IAMManagedPolicy11
+      - !Ref IAMManagedPolicy10
+      - !Ref IAMManagedPolicy9
+
+  IAMRole3:
+    Type: "AWS::IAM::Role"
+    Properties:
+      Path: "/service-role/"
+      RoleName: "Iterator-role-jfv2thtz"
+      AssumeRolePolicyDocument: "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Principal\":{\"Service\":\"lambda.amazonaws.com\"},\"Action\":\"sts:AssumeRole\"}]}"
+      MaxSessionDuration: 3600
+      ManagedPolicyArns: 
+      - !Ref IAMManagedPolicy8
+      - !Ref IAMManagedPolicy7
+
+  FlowEventMonitorLambda:
+    Type: "AWS::Lambda::Function"
+    DependsOn: "IAMRole2"
+    Properties:
+      Description: ""
+      Environment: 
+        Variables: 
+          LISTING_COMPLETED: "A.29e893174dd9b963.DappyMarket.DappyListingCompleted"
+          BLOCK_RANGE_STEP_SIZE: "24"
+          ACCESS_NODE: "https://access-testnet.onflow.org"
+          LISTING_AVAILABLE: "A.29e893174dd9b963.DappyMarket.DappyListingAvailable"
+      FunctionName: "FlowEventMonitorLambda"
+      Handler: "index.handler"
+      Code:
+        ZipFile: |
+          exports.handler = function(event, context, callback) {
+          };
+      MemorySize: 128
+      Role: !Sub "arn:aws:iam::${AWS::AccountId}:role/service-role/FlowEventMonitorLambda-role-s7hwgaqg"
+      Runtime: "nodejs14.x"
+      Timeout: 300
+      TracingConfig: 
+        Mode: "PassThrough"
+
+  LambdaVersion:
+    Type: "AWS::Lambda::Version"
+    Properties:
+      Description: "v0.2"
+      FunctionName: !Ref FlowEventMonitorLambda
+      ProvisionedConcurrencyConfig: 
+        ProvisionedConcurrentExecutions: 1
+
+  Iterator:
+    Type: "AWS::Lambda::Function"
+    DependsOn: "IAMRole3"
+    Properties:
+      Description: ""
+      FunctionName: "Iterator"
+      Handler: "index.handler"
+      Code:
+        ZipFile: |
+          exports.handler = function(event, context, callback) {
+          };
+      MemorySize: 128
+      Role: !Sub "arn:aws:iam::${AWS::AccountId}:role/service-role/Iterator-role-jfv2thtz"
+      Runtime: "nodejs14.x"
+      Timeout: 3
+      TracingConfig: 
+        Mode: "PassThrough"
+
+  QueryListingTableLambda:
+    Type: "AWS::Lambda::Function"
+    DependsOn: "IAMRole1"
+    Properties:
+      Description: ""
+      FunctionName: "QueryListingTableLambda"
+      Handler: "index.handler"
+      Code:
+        ZipFile: |
+          exports.handler = function(event, context, callback) {
+          };
+      MemorySize: 128
+      Role: !Sub "arn:aws:iam::${AWS::AccountId}:role/service-role/QueryListingTableLambda-role-m6oubphr"
+      Runtime: "nodejs14.x"
+      Timeout: 3
+      TracingConfig: 
+        Mode: "PassThrough"
+      Tags: 
+      - 
+        Key: "project"
+        Value: "flow-event-monitor"
+
+  LambdaAlias:
+    Type: "AWS::Lambda::Alias"
+    Properties:
+      Description: "The latest deployed version of this lambda"
+      FunctionName: !Ref FlowEventMonitorLambda
+      FunctionVersion: "$LATEST"
+      Name: "Latest"
+
+  LambdaPermission:
+    Type: "AWS::Lambda::Permission"
+    Properties:
+      Action: "lambda:InvokeFunction"
+      FunctionName: !GetAtt QueryListingTableLambda.Arn
+      Principal: "apigateway.amazonaws.com"
+      SourceArn: !Sub "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:1c4mgqsjt2/*/*/"
+
+  DynamoDBTable:
+    Type: "AWS::DynamoDB::Table"
+    Properties:
+      AttributeDefinitions: 
+      - 
+        AttributeName: "eventName"
+        AttributeType: "S"
+      TableName: "BlockCursorTable"
+      Tags: 
+      - 
+        Key: "project"
+        Value: "flow-event-monitor"
+      KeySchema: 
+      - 
+        AttributeName: "eventName"
+        KeyType: "HASH"
+      ProvisionedThroughput: 
+        ReadCapacityUnits: 1
+        WriteCapacityUnits: 1
+
+  DynamoDBTable2:
+    Type: "AWS::DynamoDB::Table"
+    Properties:
+      AttributeDefinitions: 
+      - 
+        AttributeName: "listingResourceID"
+        AttributeType: "N"
+      - 
+        AttributeName: "staticKey"
+        AttributeType: "N"
+      - 
+        AttributeName: "timestamp"
+        AttributeType: "S"
+      TableName: "ListingTable"
+      Tags: 
+      - 
+        Key: "project"
+        Value: "flow-event-monitor"
+      KeySchema: 
+      - 
+        AttributeName: "listingResourceID"
+        KeyType: "HASH"
+      ProvisionedThroughput: 
+        ReadCapacityUnits: 1
+        WriteCapacityUnits: 1
+      GlobalSecondaryIndexes: 
+      - 
+        IndexName: "staticKey-timestamp-index"
+        KeySchema: 
+        - 
+          AttributeName: "staticKey"
+          KeyType: "HASH"
+        - 
+          AttributeName: "timestamp"
+          KeyType: "RANGE"
+        Projection: 
+          ProjectionType: "ALL"
+        ProvisionedThroughput: 
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+
+  EventsRule:
+    Type: "AWS::Events::Rule"
+    Properties:
+      Name: !Sub "Invoke${StepFunctionsStateMachine.Name}"
+      Description: "Every minute, this invokes the Flow Event Monitor State Machine. This in turn invokes the FlowEventMonitorLambda, which will pick up new events from the Flow blockchain and saves them to dDB."
+      ScheduleExpression: "rate(1 minute)"
+      State: "DISABLED"
+      Targets: 
+      - 
+        Arn: !Ref StepFunctionsStateMachine
+        Id: "Idf2b4ac55-413f-48b5-8c26-b6cd7dbfb911"
+        RoleArn: !GetAtt IAMRole4.Arn
+      EventBusName: "default"
+
+  IAMRole4:
+    Type: "AWS::IAM::Role"
+    Properties:
+      Path: "/service-role/"
+      RoleName: "Amazon_EventBridge_Invoke_Step_Functions_1605437218"
+      AssumeRolePolicyDocument: "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Principal\":{\"Service\":\"events.amazonaws.com\"},\"Action\":\"sts:AssumeRole\"}]}"
+      MaxSessionDuration: 3600
+      ManagedPolicyArns: 
+      - !Ref IAMManagedPolicy13
+
+  IAMRole5:
+    Type: "AWS::IAM::Role"
+    Properties:
+      Path: "/service-role/"
+      RoleName: "FlowEventMonitorLambda-role-3hsk2lyc"
+      AssumeRolePolicyDocument: "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Principal\":{\"Service\":\"lambda.amazonaws.com\"},\"Action\":\"sts:AssumeRole\"}]}"
+      MaxSessionDuration: 3600
+      ManagedPolicyArns: 
+      - !Ref IAMManagedPolicy12
+
+  IAMRole6:
+    Type: "AWS::IAM::Role"
+    Properties:
+      Path: "/service-role/"
+      RoleName: "StepFunctions-FlowEventMonitorStateMachine-role-f28c6845"
+      AssumeRolePolicyDocument: "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Principal\":{\"Service\":\"states.amazonaws.com\"},\"Action\":\"sts:AssumeRole\"}]}"
+      MaxSessionDuration: 3600
+      ManagedPolicyArns: 
+      - !Ref IAMManagedPolicy4
+      - !Ref IAMManagedPolicy3
+      - !Ref IAMManagedPolicy2
+
+  IAMRole7:
+    Type: "AWS::IAM::Role"
+    Properties:
+      Path: "/service-role/"
+      RoleName: "StepFunctions-HelloWorld-role-28aedf43"
+      AssumeRolePolicyDocument: "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Principal\":{\"Service\":\"states.amazonaws.com\"},\"Action\":\"sts:AssumeRole\"}]}"
+      MaxSessionDuration: 3600
+      ManagedPolicyArns: 
+      - !Ref IAMManagedPolicy
+
+  IAMServiceLinkedRole:
+    Type: "AWS::IAM::ServiceLinkedRole"
+    Properties:
+      AWSServiceName: "ssm.amazonaws.com"
+      Description: "Provides access to AWS Resources managed or used by Amazon SSM."
+
+  IAMServiceLinkedRole2:
+    Type: "AWS::IAM::ServiceLinkedRole"
+    Properties:
+      AWSServiceName: "ops.apigateway.amazonaws.com"
+      Description: "The Service Linked Role is used by Amazon API Gateway."
+
+  IAMServiceLinkedRole3:
+    Type: "AWS::IAM::ServiceLinkedRole"
+    Properties:
+      AWSServiceName: "dynamodb.application-autoscaling.amazonaws.com"
+  
+  StepFunctionsStateMachineLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: /aws/stepfunction/StepFunctionsStateMachine
+      RetentionInDays: 14
+
+  StepFunctionsStateMachine:
+    Type: "AWS::StepFunctions::StateMachine"
+    DependsOn: "IAMRole6"
+    Properties:
+      StateMachineName: "FlowEventMonitorStateMachine"
+      DefinitionString: !Sub |
+          {
+            "Comment": "A state machine that invokes a target lambda (FEML, in this case) every x seconds.",
+            "StartAt": "ConfigureCount",
+            "States": {
+              "ConfigureCount": {
+                "Type": "Pass",
+                "Result": {
+                  "index": 0,
+                  "count": 10
+                },
+                "ResultPath": "$.iterator.Payload",
+                "Next": "Iterator"
+              },
+              "Iterator": {
+                "Type": "Task",
+                "Resource": "arn:aws:states:::lambda:invoke",
+                "Parameters": {
+                  "Payload.$": "$",
+                  "FunctionName": "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:Iterator:$LATEST"
+                },
+                "Retry": [
+                  {
+                    "ErrorEquals": [
+                      "Lambda.ServiceException",
+                      "Lambda.AWSLambdaException",
+                      "Lambda.SdkClientException"
+                    ],
+                    "IntervalSeconds": 2,
+                    "MaxAttempts": 6,
+                    "BackoffRate": 2
+                  }
+                ],
+                "Next": "IsCountReached",
+                "ResultPath": "$.iterator"
+              },
+              "IsCountReached": {
+                "Type": "Choice",
+                "Choices": [
+                  {
+                    "Variable": "$.iterator.Payload.isCountReached",
+                    "BooleanEquals": true,
+                    "Next": "Done"
+                  },
+                  {
+                    "Variable": "$.iterator.Payload.isCountReached",
+                    "BooleanEquals": false,
+                    "Next": "Wait"
+                  }
+                ]
+              },
+              "Done": {
+                "Type": "Pass",
+                "End": true
+              },
+              "Wait": {
+                "Type": "Wait",
+                "Seconds": 6,
+                "Next": "Iterator"
+              }
+            },
+            "TimeoutSeconds": 59
+          }
+      RoleArn: !Sub "arn:aws:iam::${AWS::AccountId}:role/service-role/StepFunctions-FlowEventMonitorStateMachine-role-f28c6845"
+      StateMachineType: "STANDARD"
+      LoggingConfiguration: 
+        Destinations: 
+        - 
+          CloudWatchLogsLogGroup: 
+            LogGroupArn: !GetAtt StepFunctionsStateMachineLogGroup.Arn
+        IncludeExecutionData: true
+        Level: "ERROR"
+      Tags: 
+      - 
+        Key: "project"
+        Value: "flow-event-monitor"
+
