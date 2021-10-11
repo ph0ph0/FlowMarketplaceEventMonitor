@@ -1,30 +1,6 @@
 AWSTemplateFormatVersion: "2010-09-09"
 Description: ""
 Resources:
-  IAMManagedPolicy:
-    Type: "AWS::IAM::ManagedPolicy"
-    Properties:
-      ManagedPolicyName: "XRayAccessPolicy-a02ad460-2717-41c7-95d1-6220ef4c77a0"
-      Path: "/service-role/"
-      PolicyDocument: |
-          {
-              "Version": "2012-10-17",
-              "Statement": [
-                  {
-                      "Effect": "Allow",
-                      "Action": [
-                          "xray:PutTraceSegments",
-                          "xray:PutTelemetryRecords",
-                          "xray:GetSamplingRules",
-                          "xray:GetSamplingTargets"
-                      ],
-                      "Resource": [
-                          "*"
-                      ]
-                  }
-              ]
-          }
-
   IAMManagedPolicy2:
     Type: "AWS::IAM::ManagedPolicy"
     Properties:
@@ -40,7 +16,7 @@ Resources:
                           "lambda:InvokeFunction"
                       ],
                       "Resource": [
-                          "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:Iterator:*"
+                          "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:IteratorLambda:*"
                       ]
                   },
                   {
@@ -49,7 +25,7 @@ Resources:
                           "lambda:InvokeFunction"
                       ],
                       "Resource": [
-                          "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:Iterator"
+                          "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:IteratorLambda"
                       ]
                   }
               ]
@@ -179,7 +155,7 @@ Resources:
                           "logs:PutLogEvents"
                       ],
                       "Resource": [
-                          "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/Iterator:*"
+                          "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/IteratorLambda:*"
                       ]
                   }
               ]
@@ -272,33 +248,6 @@ Resources:
               ]
           }
 
-  IAMManagedPolicy12:
-    Type: "AWS::IAM::ManagedPolicy"
-    Properties:
-      ManagedPolicyName: "AWSLambdaBasicExecutionRole-38528ada-109c-4304-af03-3e77a9d4b097"
-      Path: "/service-role/"
-      PolicyDocument: !Sub |
-          {
-              "Version": "2012-10-17",
-              "Statement": [
-                  {
-                      "Effect": "Allow",
-                      "Action": "logs:CreateLogGroup",
-                      "Resource": "arn:aws:logs:eu-west-2:${AWS::AccountId}:*"
-                  },
-                  {
-                      "Effect": "Allow",
-                      "Action": [
-                          "logs:CreateLogStream",
-                          "logs:PutLogEvents"
-                      ],
-                      "Resource": [
-                          "arn:aws:logs:eu-west-2:${AWS::AccountId}:log-group:/aws/lambda/FlowEventMonitorLambda:*"
-                      ]
-                  }
-              ]
-          }
-
   IAMManagedPolicy13:
     Type: "AWS::IAM::ManagedPolicy"
     Properties:
@@ -347,7 +296,7 @@ Resources:
     Type: "AWS::IAM::Role"
     Properties:
       Path: "/service-role/"
-      RoleName: "Iterator-role-jfv2thtz"
+      RoleName: "IteratorLambda-role-jfv2thtz"
       AssumeRolePolicyDocument: "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Principal\":{\"Service\":\"lambda.amazonaws.com\"},\"Action\":\"sts:AssumeRole\"}]}"
       MaxSessionDuration: 3600
       ManagedPolicyArns: 
@@ -362,16 +311,17 @@ Resources:
       Environment: 
         Variables: 
           LISTING_COMPLETED: "A.29e893174dd9b963.DappyMarket.DappyListingCompleted"
+          LISTING_AVAILABLE: "A.29e893174dd9b963.DappyMarket.DappyListingAvailable"
           BLOCK_RANGE_STEP_SIZE: "24"
           ACCESS_NODE: "https://access-testnet.onflow.org"
-          LISTING_AVAILABLE: "A.29e893174dd9b963.DappyMarket.DappyListingAvailable"
+          DEFAULT_BLOCK_RANGE: 50
       FunctionName: "FlowEventMonitorLambda"
       Handler: "index.handler"
       Code:
         ZipFile: |
           exports.handler = function(event, context, callback) {
           };
-      MemorySize: 128
+      MemorySize: 320
       Role: !Sub "arn:aws:iam::${AWS::AccountId}:role/service-role/FlowEventMonitorLambda-role-s7hwgaqg"
       Runtime: "nodejs14.x"
       Timeout: 300
@@ -386,19 +336,19 @@ Resources:
       ProvisionedConcurrencyConfig: 
         ProvisionedConcurrentExecutions: 1
 
-  Iterator:
+  IteratorLambda:
     Type: "AWS::Lambda::Function"
     DependsOn: "IAMRole3"
     Properties:
       Description: ""
-      FunctionName: "Iterator"
+      FunctionName: "IteratorLambda"
       Handler: "index.handler"
       Code:
         ZipFile: |
           exports.handler = function(event, context, callback) {
           };
       MemorySize: 128
-      Role: !Sub "arn:aws:iam::${AWS::AccountId}:role/service-role/Iterator-role-jfv2thtz"
+      Role: !Sub "arn:aws:iam::${AWS::AccountId}:role/service-role/IteratorLambda-role-jfv2thtz"
       Runtime: "nodejs14.x"
       Timeout: 3
       TracingConfig: 
@@ -527,16 +477,6 @@ Resources:
       ManagedPolicyArns: 
       - !Ref IAMManagedPolicy13
 
-  IAMRole5:
-    Type: "AWS::IAM::Role"
-    Properties:
-      Path: "/service-role/"
-      RoleName: "FlowEventMonitorLambda-role-3hsk2lyc"
-      AssumeRolePolicyDocument: "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Principal\":{\"Service\":\"lambda.amazonaws.com\"},\"Action\":\"sts:AssumeRole\"}]}"
-      MaxSessionDuration: 3600
-      ManagedPolicyArns: 
-      - !Ref IAMManagedPolicy12
-
   IAMRole6:
     Type: "AWS::IAM::Role"
     Properties:
@@ -548,16 +488,6 @@ Resources:
       - !Ref IAMManagedPolicy4
       - !Ref IAMManagedPolicy3
       - !Ref IAMManagedPolicy2
-
-  IAMRole7:
-    Type: "AWS::IAM::Role"
-    Properties:
-      Path: "/service-role/"
-      RoleName: "StepFunctions-HelloWorld-role-28aedf43"
-      AssumeRolePolicyDocument: "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Principal\":{\"Service\":\"states.amazonaws.com\"},\"Action\":\"sts:AssumeRole\"}]}"
-      MaxSessionDuration: 3600
-      ManagedPolicyArns: 
-      - !Ref IAMManagedPolicy
 
   IAMServiceLinkedRole:
     Type: "AWS::IAM::ServiceLinkedRole"
@@ -599,14 +529,14 @@ Resources:
                   "count": 10
                 },
                 "ResultPath": "$.iterator.Payload",
-                "Next": "Iterator"
+                "Next": "IteratorLambda"
               },
-              "Iterator": {
+              "IteratorLambda": {
                 "Type": "Task",
                 "Resource": "arn:aws:states:::lambda:invoke",
                 "Parameters": {
                   "Payload.$": "$",
-                  "FunctionName": "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:Iterator:$LATEST"
+                  "FunctionName": "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:IteratorLambda:$LATEST"
                 },
                 "Retry": [
                   {
@@ -645,7 +575,7 @@ Resources:
               "Wait": {
                 "Type": "Wait",
                 "Seconds": 6,
-                "Next": "Iterator"
+                "Next": "IteratorLambda"
               }
             },
             "TimeoutSeconds": 59

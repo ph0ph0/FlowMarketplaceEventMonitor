@@ -12,7 +12,7 @@ module.exports.getBlockCursorForEvent = async (event, currentBlockHeight) => {
   // Event can be used as ID as it should be unique
   // If we don't have a cursor for that event,
   // we will set the cursor to the currentBlockHeight - 500
-  const fixedBlockRange = 500;
+  const fixedBlockRange = parseInt(process.env.DEFAULT_BLOCK_RANGE);
   const eventName = event;
   var params = {
     TableName: "BlockCursorTable",

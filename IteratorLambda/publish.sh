@@ -5,4 +5,4 @@ rm index.zip
 cd package
 zip -X -r "../index.zip" *
 cd ..
-aws lambda update-function-code --function-name Iterator --cli-connect-timeout 6000 --debug --zip-file fileb://index.zip
+aws lambda update-function-code --function-name IteratorLambda --cli-connect-timeout 6000 --debug --zip-file fileb://index.zip
