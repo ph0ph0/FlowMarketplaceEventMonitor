@@ -61,7 +61,20 @@ A very, very rough estimate of the cost of running this architecture is about $4
    --template-body file://template.yaml \
    --capabilities CAPABILITY_NAMED_IAM
    ```
-7. 
+7. Navigate to the CloudFormation console and check the status of your deployed stack: (https://console.aws.amazon.com/cloudformation)
+8. Once your stack has been deployed (status: CREATE_COMPLETE), cd into the FlowEventMonitorLambda folder in your local repo, using your terminal.
+9. In the terminal, run `./publish.sh`. This will deploy the FEML code to the newly created lambda in your stack.
+10. Repeat for the IteratorLambda folder, and the QueryListingsTableLambda folder in the repo. Now all of the lambda code will be deployed.
+11. To test that the FlowEventMonitor is working, you can emit some events from the cryptodappy app (see below for info on how to emit events).
+12. Once the events have been emitted, navigate to the EventBridge console (). NOTE: If there is no block cursor object stored in the BlockCursorTable, then the default block range is set to 50 blocks. That means that only 50 blocks previous to the current block will be scanned. If you delay starting the FlowEventMonitor after emitting the events, the events may be located in older blocks. You can change the DEFAULT_BLOCK_RANGE environment variable in the FlowEventMonitorLambda console, or you can start the FlowEventMonitor immediately after emitting the events.
+13. To start the FlowEventMonitor, click the "Enable" button on the InvokeFlowEventMonitorStateMachine rule in the EventBridge console. WARNING: Be sure to disable this rule after a few minutes or the FlowEventMonitor will run indefinitely and could cost you money!
+14. To check that the FlowEventMonitor is working, navigate to the BlockCursorTable and check that new block cursors have been added. Check the ListingTable for the eventts that you emitted.
+15. Congratulations, your FlowEventMonitor is now working! To find out how you can modify this for your own events, see "Modifying For Your Own Use"
+
+
+# How To Emit Events from CryptoDappy
+
+There are two ways to emit events. Using the UI, and using the flow CLI.
 
 
 Go to CD and list some dappies
