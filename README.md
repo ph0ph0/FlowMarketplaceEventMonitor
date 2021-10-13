@@ -94,6 +94,8 @@ TODO: FINISH
 6. Add/remove DynamoDB tables as required, update access permissions on the FEML, and add as many Lambdas behind the API endpoint as necessary to allow you to query your backend from your client.
 
 # Testing
+
+TODO: Finish
 ## Iteterator Lambda Test Event
 
 If you would like to test the Iterator Lambda, below is a test event that you can copy and paste into the test console of the Lambda UI.
