@@ -35,7 +35,7 @@ For each event name, the FEML then queries a DynamoDB (dDB) table called BlockCu
 
 With the block cursor in hand, the FEML then searches within a block range for these events. The lower boundary is the block cursor, and the upper boundary is the most recently sealed block. There is a limit on the number of blocks that can be searched on the Flow blockchain to avoid overloading nodes on the network. Due to this, the FEML breaks down this range into batches and loops through these to search for the events. Each search of the blockchain for a particular event name is performed independently of the other events names (eg ListingAvailable events are searched first, then ListingCompleted events etc).
 
-The two different event types, creation and deletion, are kept separate in different arrays and parsed into a shape that allows them to update objects in the ListingTable in dDB. 
+The two different event types, creation and deletion, are kept separate in different arrays and parsed into a shape that allows them to update objects in the ListingTable in dDB.
 
 Before being saved to the table, the arrays are ‘deduplicated’, which involves two steps:
 1. The first step removes duplicates from within an array. This is necessary as there is nothing preventing multiple events of the same kind being emitted from a single function in a contract. This could occur by mistake if, for example, a developer emitted an event at the start of a function and then emitted the same event again at the end.
@@ -106,9 +106,8 @@ If you would like to test the Iterator Lambda, below is a test event that you ca
     }
   }
 }
- 
 
-# NOTES 
+# NOTES
 TODO: Remove
 
 Why only 20 listings? Explain that you can get more by changing the limit param on of the QueryListingsTableLambda
