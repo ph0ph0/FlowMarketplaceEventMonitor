@@ -2,11 +2,9 @@
 
 tl;dr:
 
-This is an AWS stack that listens to marketplace events emitted by the Dappy Market contract of the CryptoDappy tutorial. It populates a table using these events, and this table can be queried in order to add listings to a marketplace. This is intended as an example of a event monitoring system that people may improve and extend for their own use.
+This is an AWS stack that listens to marketplace events emitted by the Dappy Market contract of the CryptoDappy tutorial. It populates a table using these events, and this table can be queried by a frontend in order to add listings to a marketplace. This is intended as an example of an event monitoring system that people may improve and extend for their own use.
 
 There is a CloudFormation template located in the CloudFormationTemplate folder, which will allow quick and easy deployment of the stack [(see Getting Started)](#getting-started).
-
-Please note that this is far from a finished product!
 
 ## Introduction
 
