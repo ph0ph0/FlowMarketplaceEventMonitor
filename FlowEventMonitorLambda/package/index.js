@@ -15,7 +15,7 @@ const {
 } = require("./utils");
 const { getEvents } = require("./QueryEventsService");
 
-exports.handler = async (event) => {
+const d = async (event) => {
   // Configure FCL
   await config().put("accessNode.api", process.env.ACCESS_NODE);
   const eventsArray = [
@@ -27,13 +27,13 @@ exports.handler = async (event) => {
     // Get the events from Flow
     const eventObjects = await getEvents(eventsArray);
     // Select only the LISTING_AVAILABLE events
-    const rawCreatedEvents = eventObjects.filter(
+    const rawCreatedEvents = eventObjects.find(
       (e) => e.eventName === process.env.LISTING_AVAILABLE
-    )[0];
+    );
     // Select only the LISTING_COMPLETED events
-    const rawCompletedEvents = eventObjects.filter(
+    const rawCompletedEvents = eventObjects.find(
       (e) => e.eventName === process.env.LISTING_COMPLETED
-    )[0];
+    );
     // Need to flatten the array as the events are grouped into arrays by block, we don't care about this.
     // Also parse them into a shape that we can write to dDB
     const createdListingEvents = rawCreatedEvents.events
@@ -83,3 +83,5 @@ exports.handler = async (event) => {
     return new Error(`Error in main ${e}`);
   }
 };
+
+d()

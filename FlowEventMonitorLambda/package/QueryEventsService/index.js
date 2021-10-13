@@ -7,7 +7,6 @@ const { getCurrentBlockHeight, searchBlockRange } = require("../FlowService");
 /**
  * When passed an array of events, will search the Flow blockchain for them.
  * @param {[string]} eventsArray
-//  * TODO: What does it return exactly?
  * @returns {[object]}
  */
 module.exports.getEvents = async (eventsArray) => {

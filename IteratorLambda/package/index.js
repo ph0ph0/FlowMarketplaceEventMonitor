@@ -1,4 +1,4 @@
-// TODO: Try without async/await
+
 var aws = require("aws-sdk");
 var lambda = new aws.Lambda();
 exports.handler = async (event) => {
