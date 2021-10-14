@@ -39,7 +39,7 @@ exports.handler = async (event) => {
       isBase64Encoded: false,
       statusCode: 202,
       headers: headers,
-      body: JSON.stringify(data),
+      body: data,
     };
   } catch (error) {
     console.log(`Error querying dDB: ${error}`);
