@@ -15,7 +15,7 @@ const {
 } = require("./utils");
 const { getEvents } = require("./QueryEventsService");
 
-const d = async (event) => {
+exports.handler = async (event) => {
   // Configure FCL
   await config().put("accessNode.api", process.env.ACCESS_NODE);
   const eventsArray = [
