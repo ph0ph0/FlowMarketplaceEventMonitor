@@ -83,5 +83,3 @@ exports.handler = async (event) => {
     return new Error(`Error in main ${e}`);
   }
 };
-
-d()

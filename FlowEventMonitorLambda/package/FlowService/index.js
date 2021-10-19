@@ -6,9 +6,9 @@ const fcl = require("@onflow/fcl");
  */
 module.exports.getCurrentBlockHeight = async () => {
   try {
-    const block = await fcl.send([fcl.getBlock(true)]);
-    const decoded = await fcl.decode(block);
-    return decoded.height;
+    const block = await fcl.latestBlock()
+    const latestBlockHeight = block.height
+    return latestBlockHeight;
   } catch (error) {
     console.log(`Error fetching current block height`);
     throw new Error(`Flow Service getCurrentBlockHeight: ${error}`);

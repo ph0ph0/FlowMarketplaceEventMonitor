@@ -74,6 +74,7 @@ module.exports.createdListingParser = (eventObject) => {
       storefrontAddress: data.storefrontAddress,
       listingResourceID: data.listingResourceID,
       dappyID: data.dappyID,
+      templateID: data.templateID,
       name: data.name,
       dna: data.dna,
       ftVaultType: data.ftVaultType,
