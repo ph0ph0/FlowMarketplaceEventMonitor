@@ -594,3 +594,133 @@ Resources:
         Key: "project"
         Value: "flow-event-monitor"
 
+  IAMServiceLinkedRole4:
+    Type: "AWS::IAM::ServiceLinkedRole"
+    Properties:
+      AWSServiceName: "ops.apigateway.amazonaws.com"
+      Description: "The Service Linked Role is used by Amazon API Gateway."
+
+  LambdaPermission2:
+    Type: "AWS::Lambda::Permission"
+    Properties:
+      Action: "lambda:InvokeFunction"
+      FunctionName: !GetAtt QueryListingTableLambda.Arn
+      Principal: "apigateway.amazonaws.com"
+      SourceArn: !Sub "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiGatewayRestApi}/*/*/"
+
+  ApiGatewayRestApi:
+    Type: "AWS::ApiGateway::RestApi"
+    Properties:
+      Name: "flow-event-monitor-query-listing-table"
+      ApiKeySourceType: "HEADER"
+      EndpointConfiguration: 
+        Types: 
+        - "EDGE"
+
+  ApiGatewayStage:
+    Type: "AWS::ApiGateway::Stage"
+    Properties:
+      StageName: "test"
+      DeploymentId: !Ref ApiGatewayDeployment2
+      RestApiId: !Ref ApiGatewayRestApi
+      CacheClusterEnabled: false
+      TracingEnabled: false
+
+  ApiGatewayDeployment:
+    Type: "AWS::ApiGateway::Deployment"
+    DependsOn:
+      ApiGatewayMethod
+    Properties:
+      RestApiId: !Ref ApiGatewayRestApi
+      Description: "initial deployment"
+
+  ApiGatewayDeployment2:
+    Type: "AWS::ApiGateway::Deployment"
+    DependsOn:
+      ApiGatewayMethod
+    Properties:
+      RestApiId: !Ref ApiGatewayRestApi
+      Description: "Added CORS"
+
+  APIGatewayResource:
+    Type: AWS::ApiGateway::Resource
+    Properties: 
+      ParentId: !GetAtt ApiGatewayRestApi.RootResourceId
+      PathPart: "marketplace"
+      RestApiId: !Ref ApiGatewayRestApi
+
+  ApiGatewayMethod:
+    Type: "AWS::ApiGateway::Method"
+    Properties:
+      RestApiId: !Ref ApiGatewayRestApi
+      ResourceId: !Ref APIGatewayResource
+      HttpMethod: "ANY"
+      AuthorizationType: "NONE"
+      ApiKeyRequired: false
+      RequestParameters: {}
+      MethodResponses: 
+      - 
+        ResponseModels: 
+          "application/json": !Ref ApiGatewayModel1
+        ResponseParameters: 
+          "method.response.header.Access-Control-Allow-Credentials": false
+          "method.response.header.Access-Control-Allow-Headers": false
+          "method.response.header.Access-Control-Allow-Methods": false
+          "method.response.header.Access-Control-Allow-Origin": false
+        StatusCode: "200"
+      - 
+        ResponseParameters: 
+          "method.response.header.Access-Control-Allow-Credentials": false
+          "method.response.header.Access-Control-Allow-Headers": false
+          "method.response.header.Access-Control-Allow-Methods": false
+          "method.response.header.Access-Control-Allow-Origin": false
+        StatusCode: "500"
+      Integration: 
+        CacheNamespace: !Ref APIGatewayResource
+        ContentHandling: "CONVERT_TO_TEXT"
+        IntegrationHttpMethod: "POST"
+        IntegrationResponses: 
+        - 
+          ResponseParameters: 
+            "method.response.header.Access-Control-Allow-Credentials": "'true'"
+            "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+            "method.response.header.Access-Control-Allow-Methods": "'OPTIONS, POST, GET'"
+            "method.response.header.Access-Control-Allow-Origin": "'*'"
+          ResponseTemplates: {}
+          SelectionPattern: ""
+          StatusCode: "200"
+        PassthroughBehavior: "WHEN_NO_MATCH"
+        TimeoutInMillis: 29000
+        Type: "AWS"
+        Uri: !Sub "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${QueryListingTableLambda}/invocations"
+
+  ApiGatewayModel1:
+    Type: "AWS::ApiGateway::Model"
+    Properties:
+      RestApiId: !Ref ApiGatewayRestApi
+      Name: "EmptyModel"
+      Description: "This is a default empty schema model"
+      Schema: |
+          {
+            "$schema": "http://json-schema.org/draft-04/schema#",
+            "title" : "Empty Schema",
+            "type" : "object"
+          }
+      ContentType: "application/json"
+
+  ApiGatewayModel2:
+    Type: "AWS::ApiGateway::Model"
+    Properties:
+      RestApiId: !Ref ApiGatewayRestApi
+      Name: "ErrorModel"
+      Description: "This is a default error schema model"
+      Schema: |
+          {
+            "$schema" : "http://json-schema.org/draft-04/schema#",
+            "title" : "Error Schema",
+            "type" : "object",
+            "properties" : {
+              "message" : { "type" : "string" }
+            }
+          }
+      ContentType: "application/json"
