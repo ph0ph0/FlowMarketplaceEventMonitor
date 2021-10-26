@@ -6,7 +6,7 @@ const fcl = require("@onflow/fcl");
  */
 module.exports.getCurrentBlockHeight = async () => {
   try {
-    const block = await fcl.latestBlock()
+    const block = await fcl.latestBlock(true)
     const latestBlockHeight = block.height
     return latestBlockHeight;
   } catch (error) {
