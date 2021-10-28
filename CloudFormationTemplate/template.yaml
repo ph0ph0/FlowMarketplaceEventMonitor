@@ -310,8 +310,8 @@ Resources:
       Description: ""
       Environment: 
         Variables: 
-          LISTING_COMPLETED: "A.29e893174dd9b963.DappyMarket.DappyListingCompleted"
-          LISTING_AVAILABLE: "A.29e893174dd9b963.DappyMarket.DappyListingAvailable"
+          LISTING_COMPLETED: "A.3045a3c468a9894d.DappyMarket.DappyListingCompleted"
+          LISTING_AVAILABLE: "A.3045a3c468a9894d.DappyMarket.DappyListingAvailable"
           BLOCK_RANGE_STEP_SIZE: "24"
           ACCESS_NODE: "https://access-testnet.onflow.org"
           DEFAULT_BLOCK_RANGE: 50

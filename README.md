@@ -51,6 +51,8 @@ Once the deduplication process is finished, the events are written in batches to
 
 ## Monthly Cost Estimate
 
+**WARNING**: Never leave AWS services running if you do not fully understand their costs!!! Please perform your own accurate cost analysis before running this application for extended periods!
+
 A very, very rough estimate of the cost of running this architecture is about $40 per month. This was calculated using the AWS Pricing Calculator and various online tools. The approximate breakdown is as follows:
 
 * Lambda Functions: ~$0 (free tier)
@@ -79,7 +81,7 @@ A very, very rough estimate of the cost of running this architecture is about $4
 10. Repeat for the IteratorLambda folder, and the QueryListingsTableLambda folder in the repo. Now all of the lambda code will be deployed.
 11. To test that the FlowEventMonitor is working, you can emit some events from the cryptodappy app (see below for info on how to emit events).
 12. Once the events have been emitted, navigate to the EventBridge console (https://aws.amazon.com/eventbridge/). NOTE: If there is no block cursor object stored in the BlockCursorTable, then the default block range is set to 50 blocks. That means that only 50 blocks previous to the current block will be scanned. If you delay starting the FlowEventMonitor after emitting the events, the events may be located in older blocks. You can change the DEFAULT_BLOCK_RANGE environment variable in the FlowEventMonitorLambda console, or you can start the FlowEventMonitor immediately after emitting the events.
-13. To start the FlowEventMonitor, click the "Enable" button on the InvokeFlowEventMonitorStateMachine rule in the EventBridge console. WARNING: Be sure to disable this rule after a few minutes or the FlowEventMonitor will run indefinitely and could cost you money!
+13. To start the FlowEventMonitor, click the "Enable" button on the InvokeFlowEventMonitorStateMachine rule in the EventBridge console. **WARNING**: Be sure to disable this rule after a few minutes or the FlowEventMonitor will run indefinitely and could cost you a lot of money!
 14. To check that the FlowEventMonitor is working, navigate to the BlockCursorTable and check that new block cursors have been added. Check the ListingTable for the events that you emitted.
 15. Congratulations, your FlowEventMonitor is now working! To find out how you can modify this for your own events, see "Modifying For Your Own Use".
 16. In order to pull down objects from the ListingTable via the QueryListingsTableLambda (connected via API Gateway) into your frontend, you will need to enable CORS for the API in API Gateway, and obtain your API endpoint url (TODO: Add instructions on how to do this).
