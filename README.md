@@ -95,11 +95,12 @@ TODO: FINISH
 # Modifying For Your Own Use
 
 1. Change the FEML environment variables to event names that you would like to monitor. Events names are of the form "A.<ContractAddress>.<ContractName>.<EventName>". 
-2. Once you have added some of your own events, you can run the FlowEventMonitor locally on its own to see if it is picking up your events (check the logs). 
-3. You can then go to utils and change the parsing functions so that the events are converted to a shape suitable for your database. 
-4. Next, you could create your own DynamoDB table for events, and point the ListingsTableService (located in the FlowEventMonitorLambda folder) to your new table. Don't forget to update the permissions on the FlowEventMonitorLambda in the Lambda console so that it can write to your new table. 
-5. If you want to pull down your events from the DynamoDB table to your front end, you will also need to update the QueryListingTableLambda so it points to your new table.
-6. Add/remove DynamoDB tables as required, update access permissions on the FEML, and add as many Lambdas behind the API endpoint as necessary to allow you to query your backend from your client.
+2. Change `{ region: "us-east-1" }` to your target AWS region on line 2 of FlowEventMonitorLambda/package/BlockCursorTableService/index.js, FlowEventMonitorLambda/package/ListingsTableService/index.js and QueryListingsTableLambda/package/index.js. 
+3. Once you have added some of your own events, you can run the FlowEventMonitor locally on its own to see if it is picking up your events (check the logs). 
+4. You can then go to utils and change the parsing functions so that the events are converted to a shape suitable for your database. 
+5. Next, you could create your own DynamoDB table for events, and point the ListingsTableService (located in the FlowEventMonitorLambda folder) to your new table. Don't forget to update the permissions on the FlowEventMonitorLambda in the Lambda console so that it can write to your new table. 
+6. If you want to pull down your events from the DynamoDB table to your front end, you will also need to update the QueryListingTableLambda so it points to your new table.
+7. Add/remove DynamoDB tables as required, update access permissions on the FEML, and add as many Lambdas behind the API endpoint as necessary to allow you to query your backend from your client.
 
 # Testing
 
